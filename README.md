@@ -181,7 +181,7 @@ Use `--no-import-id` to omit `imported_id` entirely and rely on Actual's fuzzy m
 
 By default, `abctl` omits `imported_payee` and lets Actual derive a [normalized/title-cased](https://github.com/actualbudget/actual/blob/v26.4.0/packages/loot-core/src/server/accounts/title/index.ts#L32-L60) version from `payee_name`, matching the UI import behaviour. Use `--raw-imported-payee` to instead send the CSV `Payee` value as `imported_payee` exactly as it appears in the file. If an existing matched transaction already has Actual's normalized/title-cased `imported_payee`, `--raw-imported-payee` can make it differ and appear as an update even when other fields are otherwise unchanged.
 
-Use `--import-category` to map `Category` values to existing Actual category names and include the matched category id in reconciliation. Category import is enabled by default in the Actual UI CSV importer; pass `--import-category` in the CLI when you want that behavior. Category matching is exact and case-sensitive, and [unresolved category text is sent as-is](https://github.com/actualbudget/actual/issues/7677). Categories are not created automatically.
+Use `--import-category` to map `Category` values to existing Actual category names and include the matched category id in reconciliation. Category import is enabled by default in the Actual UI CSV importer; pass `--import-category` in the CLI when you want that behavior. Category matching is exact and case-sensitive. Categories are not created automatically.
 
 To fully mimic Actual UI CSV import matching, combine `--no-import-id --import-category` and leave `--raw-imported-payee` off.
 
