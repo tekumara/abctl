@@ -143,17 +143,14 @@ abctl csv-import <account> path/to/import.csv --json
 # Preview reconciliation without writing
 abctl csv-import <account> path/to/import.csv --dry-run
 
-# Preview/import without imported_id so Actual relies on fuzzy matching
-abctl csv-import <account> path/to/import.csv --dry-run --no-import-id
+# Preview/import with a generated imported_id instead of fuzzy matching
+abctl csv-import <account> path/to/import.csv --dry-run --import-id
 
 # Preview/import with raw CSV Payee stored as imported_payee
 abctl csv-import <account> path/to/import.csv --dry-run --raw-imported-payee
 
-# Preview/import categories from the Category column when they match Actual categories
-abctl csv-import <account> path/to/import.csv --dry-run --import-category
-
-# Fully mimic Actual UI CSV import matching
-abctl csv-import <account> path/to/import.csv --dry-run --no-import-id --import-category
+# Preview/import without mapping the Category column
+abctl csv-import <account> path/to/import.csv --dry-run --no-import-category
 
 # Import the CSV into an account
 abctl csv-import <account> path/to/import.csv
@@ -175,17 +172,15 @@ Optional headers:
 
 `<account>` may be either the Actual account id or account name. Matching prefers exact id, then exact name, then unique case-insensitive name, then a unique case-insensitive substring match. If the match is ambiguous, the command fails and asks you to use the id.
 
-`Date` accepts either `YYYY-MM-DD` or your budget date format. `Debit` and `Credit` must be non-negative amounts without signs. `Notes` are imported into transaction notes, but are not included in `imported_id`. When `Balance` is present, it is used to strengthen row uniqueness and `imported_id` stability.
+`Date` accepts either `YYYY-MM-DD` or your budget date format. `Debit` and `Credit` must be non-negative amounts without signs.
 
-Use `--no-import-id` to omit `imported_id` entirely and rely on Actual's fuzzy matching instead. Set `imported_id` in existing transactions to null. This mimics how imports via the UI work.
+By default, `abctl` omits `imported_id` and relies on Actual's fuzzy matching, matching UI CSV imports. Use `--import-id` to generate one from `Date`, `Payee`, `Debit`, `Credit`, and optional `Balance`; `Notes` are excluded.
 
 By default, `abctl` omits `imported_payee` and lets Actual derive a [normalized/title-cased](https://github.com/actualbudget/actual/blob/v26.4.0/packages/loot-core/src/server/accounts/title/index.ts#L32-L60) version from `payee_name`, matching the UI import behaviour. Use `--raw-imported-payee` to instead send the CSV `Payee` value as `imported_payee` exactly as it appears in the file. If an existing matched transaction already has Actual's normalized/title-cased `imported_payee`, `--raw-imported-payee` can make it differ and appear as an update even when other fields are otherwise unchanged.
 
-Use `--import-category` to map `Category` values to existing Actual category names and include the matched category id in reconciliation. Category import is enabled by default in the Actual UI CSV importer; pass `--import-category` in the CLI when you want that behavior. Category matching is exact and case-sensitive. Categories are not created automatically.
+By default, `abctl` maps `Category` values to existing Actual category names and includes the matched category id in reconciliation, matching the UI. Use `--no-import-category` to ignore them. Category matching is exact and case-sensitive. Categories are not created automatically.
 
-To fully mimic Actual UI CSV import matching, combine `--no-import-id --import-category` and leave `--raw-imported-payee` off.
-
-In the Import preview, `Preview matches` is the number of imported rows that matched existing transactions. `Updated` is the subset of those matches whose stored fields would change. Because the `--no-import-id`, `--raw-imported-payee` and `--import-category` flags change their respective fields they will affect the `Updated` count.
+In the Import preview, `Preview matches` is the number of imported rows that matched existing transactions. `Updated` is the subset of those matches whose stored fields would change. The `--import-id`, `--raw-imported-payee`, and `--no-import-category` flags can affect these counts.
 
 ## QIF Import
 

@@ -51,13 +51,15 @@ const CSV_IMPORT_HELP = [
   "",
   "CSV columns:",
   "  Required headers: Date, Payee, Notes, Debit, Credit.",
-  "  Optional headers: Balance (used to strengthen row uniqueness and imported_id stability), Category, SubCategory.",
+  "  Optional headers: Balance, Category, SubCategory.",
   "  Debit and Credit must be non-negative amounts without signs.",
-  "  Notes are imported as transaction notes but excluded from imported_id.",
-  "  Use --import-category to map Category values to existing Actual category names.",
+  "  Category values map to existing Actual category names by default.",
+  "  Use --no-import-category to ignore Category values.",
   "",
   "Matching:",
-  "  Use --no-import-id to omit imported_id and rely on Actual's fuzzy matching.",
+  "  By default, imported_id is omitted so Actual uses fuzzy matching like the UI.",
+  "  Use --import-id to generate imported_id from Date, Payee, Debit, Credit, and Balance.",
+  "  Notes are excluded from generated imported_id values.",
   "  By default, Actual derives imported_payee from payee_name like UI CSV import.",
   "  Use --raw-imported-payee to send the CSV Payee as imported_payee exactly as-is.",
   "",
@@ -566,9 +568,9 @@ function buildProgram() {
     .argument("<csv-path>")
     .option("--dry-run", "preview reconciliation without writing transactions")
     .option("--json", "print mapped ImportTransactionEntity objects and exit")
-    .option("--no-import-id", "omit imported_id and rely on Actual fuzzy matching")
+    .option("--import-id", "generate imported_id instead of relying on Actual fuzzy matching")
     .option("--raw-imported-payee", "send the raw CSV Payee as imported_payee")
-    .option("--import-category", "map CSV Category values to existing Actual category names")
+    .option("--no-import-category", "ignore CSV Category values")
     .addHelpText("after", CSV_IMPORT_HELP)
     .action(async (account, csvPath, options) => {
       await commandCsvImport({
@@ -576,9 +578,9 @@ function buildProgram() {
         csvPath,
         dryRun: options.dryRun ?? false,
         json: options.json ?? false,
-        includeImportId: options.importId !== false,
+        includeImportId: options.importId ?? false,
         rawImportedPayee: options.rawImportedPayee ?? false,
-        importCategory: options.importCategory ?? false,
+        importCategory: options.importCategory !== false,
       });
     });
 
