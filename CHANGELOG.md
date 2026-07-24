@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.3](https://github.com/tekumara/abctl/compare/v0.0.2...v0.0.3) (2026-07-24)
+
+
+### Features
+
+* match UI CSV import defaults ([2286279](https://github.com/tekumara/abctl/commit/22862792d61a0fb8ee0fe09fc80c104c7c716a28))
+
+
+### Chores
+
+* **deps:** bump @actual-app/api to 26.6.0 ([cac8ede](https://github.com/tekumara/abctl/commit/cac8ede95138e0d95bdf98bba44a0dcc299f36ad))
+
 ## [0.0.2](https://github.com/tekumara/abctl/compare/v0.0.1...v0.0.2) (2026-05-02)
 
 
