@@ -172,7 +172,7 @@ Optional headers:
 
 `<account>` may be either the Actual account id or account name. Matching prefers exact id, then exact name, then unique case-insensitive name, then a unique case-insensitive substring match. If the match is ambiguous, the command fails and asks you to use the id.
 
-`Date` accepts either `YYYY-MM-DD` or your budget date format. `Debit` and `Credit` must be non-negative amounts without signs.
+`Date` accepts either `YYYY-MM-DD` or your budget date format. Mapped transaction dates in `--json` output use `YYYY-MM-DD`; reconciliation preview dates use your budget date format. `Debit` and `Credit` must be non-negative amounts without signs.
 
 By default, `abctl` omits `imported_id` and relies on Actual's fuzzy matching, matching UI CSV imports. Use `--import-id` to generate one from `Date`, `Payee`, `Debit`, `Credit`, and optional `Balance`; `Notes` are excluded.
 

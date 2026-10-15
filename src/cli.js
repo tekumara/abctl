@@ -734,6 +734,7 @@ async function commandCsvImport(args) {
         mapped: transactions.length,
         dryRun: args.dryRun,
         result,
+        dateFormat,
       }),
     );
   });
@@ -789,6 +790,7 @@ async function commandQifImport(args) {
         mapped: transactions.length,
         dryRun: args.dryRun,
         result,
+        dateFormat,
       }),
     );
   });

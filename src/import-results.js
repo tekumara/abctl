@@ -1,4 +1,4 @@
-import { formatAmount } from "./reporting.js";
+import { formatAmount, formatBudgetDate } from "./reporting.js";
 import { renderCliTable } from "./table-rendering.js";
 
 function makeRow(cells, { bold = false } = {}) {
@@ -26,7 +26,7 @@ export function buildImportSummaryTable({ account, mapped, dryRun, result }) {
   };
 }
 
-export function buildPreviewMatchesTable(result) {
+export function buildPreviewMatchesTable(result, { dateFormat } = {}) {
   const visiblePreviewMatches = result.updatedPreview.filter((entry) => !entry.ignored);
 
   return {
@@ -39,7 +39,9 @@ export function buildPreviewMatchesTable(result) {
     ],
     rows: visiblePreviewMatches.map((entry) =>
       makeRow([
-        entry.transaction?.date ?? "",
+        entry.transaction?.date
+          ? formatBudgetDate(entry.transaction.date, dateFormat)
+          : "",
         entry.transaction?.imported_payee ?? entry.transaction?.payee_name ?? "",
         typeof entry.transaction?.amount === "number"
           ? formatAmount(entry.transaction.amount)
@@ -58,9 +60,9 @@ function renderErrors(errors) {
   return ["Errors", ...errors.map((error) => `- ${error.message}`)].join("\n");
 }
 
-export function renderImportResult({ account, mapped, dryRun, result }) {
+export function renderImportResult({ account, mapped, dryRun, result, dateFormat }) {
   const sections = [renderCliTable(buildImportSummaryTable({ account, mapped, dryRun, result }))];
-  const previewMatchesTable = buildPreviewMatchesTable(result);
+  const previewMatchesTable = buildPreviewMatchesTable(result, { dateFormat });
 
   if (previewMatchesTable.rows.length > 0) {
     sections.push(renderCliTable(previewMatchesTable));

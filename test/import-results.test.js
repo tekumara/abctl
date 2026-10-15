@@ -28,7 +28,7 @@ const result = {
     },
     {
       transaction: {
-        date: "2025-10-18",
+        date: "2026-07-24",
         imported_payee: "Example Payee",
         amount: 12345,
       },
@@ -60,12 +60,13 @@ test("buildImportSummaryTable reports requested import counts", () => {
 });
 
 test("buildPreviewMatchesTable only projects non-ignored preview matches into table rows", () => {
-  const table = buildPreviewMatchesTable(result);
+  const table = buildPreviewMatchesTable(result, { dateFormat: "DD/MM/YYYY" });
 
   assert.equal(table.title, "Updated");
-  assert.deepEqual(table.rows.map((row) => row.cells), [
-    ["2025-10-18", "Example Payee", "123.45", "false"],
-  ]);
+  assert.deepEqual(
+    table.rows.map((row) => row.cells.slice(1)),
+    [["Example Payee", "123.45", "false"]],
+  );
 });
 
 test("renderImportResult includes summary, non-ignored preview table, and error messages", () => {
@@ -73,6 +74,7 @@ test("renderImportResult includes summary, non-ignored preview table, and error 
     account,
     mapped: 12,
     dryRun: false,
+    dateFormat: "DD/MM/YYYY",
     result,
   });
 
@@ -82,6 +84,8 @@ test("renderImportResult includes summary, non-ignored preview table, and error 
   assert.equal(countOccurrences(rendered, /Updated/g), 2);
   assert.doesNotMatch(rendered, /Hellofresh/);
   assert.match(rendered, /Example Payee/);
+  assert.match(rendered, /24\/07\/2026/);
+  assert.doesNotMatch(rendered, /2026-07-24/);
   assert.match(rendered, /Duplicate imported_id/);
 });
 
